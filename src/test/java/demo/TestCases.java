@@ -15,6 +15,8 @@ import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingPreferences;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
@@ -27,6 +29,7 @@ import demo.Utilities;
 public class TestCases {
 
     ChromeDriver driver;
+    WebDriverWait wait;
 
     @BeforeTest
     public void startBrowser() {
@@ -48,24 +51,27 @@ public class TestCases {
         driver = new ChromeDriver(options);
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
+        // driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
+        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
     }
 
     @Test()
     public void testCase01() throws InterruptedException {
+        System.out.println("Start Test Case : Test Case 1");
         driver.get("https://www.scrapethissite.com/pages/");
 
         // Verify the current link with Assert Statements
         Assert.assertTrue(driver.getCurrentUrl().equals("https://www.scrapethissite.com/pages/"), "Unverified URL");
         System.out.println("Verified URL: https://www.scrapethissite.com/pages/");
 
-        WebElement hockeyTeamsElement = driver.findElement(By.xpath("//a[contains(text(),'Hockey Teams')]"));
+        WebElement hockeyTeamsElement = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[contains(text(),'Hockey Teams')]")));
         SeleniumWrapper.clickOnElement(hockeyTeamsElement, driver);
 
         // Initialize and declare a HashMap ArrayList called dataList
         ArrayList<HashMap<String, Object>> dataList = new ArrayList<>();
 
         // Locate page 1
-        WebElement clickOnPage = driver.findElement(By.xpath("(//ul[@class='pagination']/li/a)[1]"));
+        WebElement clickOnPage = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("(//ul[@class='pagination']/li/a)[1]")));
 
         // Click on page 1
         SeleniumWrapper.clickOnElement(clickOnPage, driver);
@@ -130,13 +136,19 @@ public class TestCases {
             e.printStackTrace();
         }
 
+        
+        System.out.println("End Test Case: Test Case 1");
+
     }
 
     @Test
     public void testCase02() {
+        System.out.println("Start Test Case : Test Case 2");
         driver.get("https://www.scrapethissite.com/pages/");
 
-        WebElement oscarWiningFilms = driver.findElement(By.xpath("//a[contains(text(),'Oscar Winning Films')]"));
+        WebElement oscarWiningFilms = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[contains(text(),'Oscar Winning Films')]")));
+     
+       // WebElement oscarWiningFilms = driver.findElement(By.xpath("//a[contains(text(),'Oscar Winning Films')]"));
         SeleniumWrapper.clickOnElement(oscarWiningFilms, driver);
 
         Utilities.scrape("2015", driver);
@@ -145,6 +157,8 @@ public class TestCases {
         Utilities.scrape("2012", driver);
         Utilities.scrape("2011", driver);
         Utilities.scrape("2010", driver);
+
+        System.out.println("End Test Case: Test Case 2");
 
     }
 
